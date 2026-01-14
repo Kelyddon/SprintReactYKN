@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { me, logout } from '../../services/api';
+import { me, logout, deleteMe } from '../../services/api';
+import DeleteAccountConfirm from '../../components/DeleteAccountConfirm';
 
 export default function Header() {
   const [user, setUser] = useState<any | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     let mounted = true;
+
     async function load() {
       try {
-        // Try quick read from localStorage for immediate UX
+        // Lecture rapide depuis le localStorage
         const stored = localStorage.getItem('authUser');
         if (stored) {
           if (mounted) setUser(JSON.parse(stored));
@@ -16,7 +19,7 @@ export default function Header() {
           const res = await me();
           if (mounted) setUser(res.user);
         }
-      } catch (_) {
+      } catch (err) {
         if (mounted) setUser(null);
       }
     }
@@ -24,6 +27,7 @@ export default function Header() {
     load();
     const h = () => load();
     window.addEventListener('auth:changed', h);
+
     return () => {
       mounted = false;
       window.removeEventListener('auth:changed', h);
@@ -33,7 +37,7 @@ export default function Header() {
   async function handleLogout() {
     try {
       await logout();
-      try { localStorage.removeItem('authUser'); } catch(_) {}
+      localStorage.removeItem('authUser');
       window.dispatchEvent(new Event('auth:changed'));
       window.location.hash = '#/connexion';
     } catch (err) {
@@ -41,20 +45,54 @@ export default function Header() {
     }
   }
 
+  async function handleDeleteAccount() {
+    try {
+      setShowDeleteConfirm(false); // 👈 ferme la popup immédiatement
+      await deleteMe();
+      localStorage.removeItem('authUser');
+      window.dispatchEvent(new Event('auth:changed'));
+      window.location.hash = '#/connexion';
+    } catch (err) {
+      setShowDeleteConfirm(false); // 👈 sécurité
+      alert("Erreur lors de la suppression du compte");
+      console.error(err);
+    }
+  }
+
+
   return (
     <header style={{ padding: 12, borderBottom: '1px solid #ddd' }}>
       <nav style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <a href="#/">Accueil</a>
+
         {user && <a href="#/addpost">Ajouter</a>}
         {!user && <a href="#/connexion">Se connecter</a>}
         {!user && <a href="#/inscription">S'inscrire</a>}
+
         {user && (
           <>
             <span>Bonjour {user.firstName}</span>
-            <button onClick={handleLogout}>Déconnexion</button>
+
+            <button onClick={handleLogout}>
+              Déconnexion
+            </button>
+
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              style={{ color: 'red' }}
+            >
+              Supprimer mon compte
+            </button>
           </>
         )}
       </nav>
+
+      {showDeleteConfirm && (
+        <DeleteAccountConfirm
+          onConfirm={handleDeleteAccount}
+          onCancel={() => setShowDeleteConfirm(false)}
+        />
+      )}
     </header>
   );
 }
