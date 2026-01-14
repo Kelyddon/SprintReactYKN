@@ -1,3 +1,10 @@
+/**
+ * Configuration Multer pour l'upload d'images.
+ * - Stockage disque dans /uploads
+ * - Génère un nom unique
+ * - Vérifie que le fichier est une image
+ * - Limite la taille (5MB)
+ */
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
@@ -12,6 +19,7 @@ const storage = multer.diskStorage({
 		cb(null, uploadDir);
 	},
 	filename: function (_req, file, cb) {
+		// On garde l'extension si elle est autorisée, sinon on force .jpg
 		const ext = path.extname(file.originalname || '').toLowerCase() || '.jpg';
 		const safeExt = allowedExt.has(ext) ? ext : '.jpg';
 		const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`;
@@ -22,11 +30,13 @@ const storage = multer.diskStorage({
 const upload = multer({
 	storage,
 	fileFilter: function (_req, file, cb) {
+		// On accepte uniquement les images
 		if (file.mimetype && file.mimetype.startsWith('image/')) return cb(null, true);
 		const err = new Error('Only image files are allowed');
 		err.status = 400;
 		return cb(err);
 	},
+	// Taille max: 5MB
 	limits: { fileSize: 5 * 1024 * 1024 },
 });
 

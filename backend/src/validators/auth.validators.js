@@ -1,3 +1,7 @@
+/**
+ * Validateurs (express-validator) pour l'auth.
+ * Objectif: refuser les payloads invalides avant d'entrer dans les contrôleurs.
+ */
 const { body } = require('express-validator');
 const { validate } = require('../middleware/validate');
 

@@ -1,3 +1,9 @@
+/**
+ * Validateurs (express-validator) pour les posts.
+ * - validatePostId: vérifie que l'id est un ObjectId valide
+ * - validateCreatePost: description + image obligatoire
+ * - validateUpdatePost: description optionnelle
+ */
 const { body, check, param } = require('express-validator');
 const { validate } = require('../middleware/validate');
 

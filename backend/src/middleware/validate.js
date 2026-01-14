@@ -1,6 +1,11 @@
+/**
+ * Middleware express-validator.
+ * Transforme les erreurs de validation en réponse JSON 400.
+ */
 const { validationResult } = require('express-validator');
 
 function validate(req, res, next) {
+  // Récupère le résultat des validateurs déclarés dans les routes
   const result = validationResult(req);
   if (result.isEmpty()) return next();
 
