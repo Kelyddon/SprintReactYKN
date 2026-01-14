@@ -24,26 +24,26 @@ export default function FormSignup() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div>
-				<label>Prénom</label>
-				<input value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+		   <form onSubmit={handleSubmit}>
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Prénom:   </label>
+				   <input value={firstName} onChange={(e) => setFirstName(e.target.value)} required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
-			<div>
-				<label>Nom</label>
-				<input value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Nom:   </label>
+				   <input value={lastName} onChange={(e) => setLastName(e.target.value)} required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
-			<div>
-				<label>Nom d'utilisateur</label>
-				<input value={username} onChange={(e) => setUsername(e.target.value)} required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Nom d'utilisateur:   </label>
+				   <input value={username} onChange={(e) => setUsername(e.target.value)} required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
-			<div>
-				<label>Email</label>
-				<input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Email:   </label>
+				   <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
-			<div>
-				<label>Mot de passe</label>
-				<input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Mot de passe:   </label>
+				   <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
 			{error && <div style={{ color: 'red' }}>{error}</div>}
 			<button type="submit">S'inscrire</button>

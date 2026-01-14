@@ -24,13 +24,13 @@ export default function FormLogin() {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<div>
-				<label>Email</label>
-				<input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Email:   </label>
+				   <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
-			<div>
-				<label>Mot de passe</label>
-				<input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
+			   <div style={{ marginBottom: '1.3em' }}>
+				<label>Mot de passe:   </label>
+				   <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required style={{ border: '1px solid #888', borderRadius: 4, padding: '6px 10px', background: '#fafbfc' }} />
 			</div>
 			{error && <div style={{ color: 'red' }}>{error}</div>}
 			<button type="submit">Se connecter</button>
