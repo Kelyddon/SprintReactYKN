@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { updatePost } from '../../services/api';
 
 export default function UpdatePost({ id, initial }: { id: string; initial?: { title?: string; content?: string } }) {
@@ -38,54 +38,61 @@ export default function UpdatePost({ id, initial }: { id: string; initial?: { ti
 	}
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			style={{
-				display: 'flex',
-				flexDirection: 'column',
-				gap: 12,
-				border: '1px solid #ccc',
-				padding: 16,
-				borderRadius: 10,
-				maxWidth: 520,
-				margin: '0 auto',
-			}}
-		>
-			<div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-				<label style={{ width: 90, textAlign: 'right' }}>Titre :</label>
-				<input
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					required
-					style={{ flex: 1, minWidth: 0, boxSizing: 'border-box' }}
-				/>
-			</div>
-			<div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-				<label style={{ width: 90, textAlign: 'right', paddingTop: 6 }}>Contenu :</label>
-				<textarea
-					value={content}
-					onChange={(e) => setContent(e.target.value)}
-					required
-					rows={5}
-					style={{ flex: 1, minWidth: 0, boxSizing: 'border-box' }}
-				/>
-			</div>
-			<div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-				<label style={{ width: 90, textAlign: 'right' }}>Image :</label>
-				<input
-					type="file"
-					accept="image/*"
-					onChange={(e) => setImage(e.target.files?.[0] || null)}
-					style={{ flex: 1, minWidth: 0, boxSizing: 'border-box' }}
-				/>
-			</div>
-			{success && <div style={{ color: 'green' }}>{success}</div>}
-			{error && <div style={{ color: 'red' }}>{error}</div>}
-			<div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 4 }}>
-				<button type="submit">Mettre à jour</button>
-				<button type="button" onClick={handleCancel}>
-					Annuler
-				</button>
+		<form onSubmit={handleSubmit} className="mx-auto w-full max-w-xl rounded-xl border border-brand-dark/20 bg-white p-4 shadow-sm">
+			<div className="space-y-4">
+				<div>
+					<label className="mb-1 block text-sm font-medium text-brand-dark">Titre</label>
+					<input
+						value={title}
+						onChange={(e) => setTitle(e.target.value)}
+						required
+						className="w-full rounded-lg border border-brand-dark/20 px-3 py-2 text-brand-dark outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-sand/40"
+					/>
+				</div>
+				<div>
+					<label className="mb-1 block text-sm font-medium text-brand-dark">Contenu</label>
+					<textarea
+						value={content}
+						onChange={(e) => setContent(e.target.value)}
+						required
+						rows={5}
+						className="w-full resize-y rounded-lg border border-brand-dark/20 px-3 py-2 text-brand-dark outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-sand/40"
+					/>
+				</div>
+				<div>
+					<label className="mb-1 block text-sm font-medium text-brand-dark">Image</label>
+					<input
+						type="file"
+						accept="image/*"
+						onChange={(e) => setImage(e.target.files?.[0] || null)}
+						className="block w-full cursor-pointer rounded-lg border border-brand-dark/20 bg-white px-3 py-2 text-sm text-brand-dark/80 file:mr-3 file:rounded-md file:border-0 file:bg-brand-sand/40 file:px-3 file:py-2 file:text-sm file:font-medium file:text-brand-dark hover:file:bg-brand-sand/60"
+					/>
+				</div>
+				{success && (
+					<div className="rounded-lg border border-brand-teal/30 bg-brand-teal/10 px-3 py-2 text-sm text-brand-dark">
+						{success}
+					</div>
+				)}
+				{error && (
+					<div className="rounded-lg border border-brand-coral/40 bg-brand-coral/10 px-3 py-2 text-sm text-brand-dark">
+						{error}
+					</div>
+				)}
+				<div className="flex justify-center gap-2">
+					<button
+						type="submit"
+						className="rounded-lg bg-brand-teal px-5 py-2 font-medium text-white hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-sand/60"
+					>
+						Mettre à jour
+					</button>
+					<button
+						type="button"
+						onClick={handleCancel}
+						className="rounded-lg border border-brand-dark/20 bg-white px-5 py-2 font-medium text-brand-dark hover:bg-brand-sand/30 focus:outline-none focus:ring-2 focus:ring-brand-sand/50"
+					>
+						Annuler
+					</button>
+				</div>
 			</div>
 		</form>
 	);

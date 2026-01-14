@@ -124,32 +124,38 @@ export default function PostCard({ post, currentUser }: { post: Post; currentUse
   }, [post.imageUrl, post.image]);
 
   return (
-    <div style={{ border: '1px solid #ccc', padding: 8, marginBottom: 8 }}>
-      <h3>{post.title || 'Post'}</h3>
-      <p>{post.description || post.content}</p>
+    <div className="mb-3 rounded-xl border border-brand-dark/20 bg-white p-4 shadow-sm">
+      <h3 className="text-lg font-semibold text-brand-dark">{post.title || 'Post'}</h3>
+      <p className="mt-1 text-brand-dark/80">{post.description || post.content}</p>
 
       {imgSrc && (
       <img
         src={imgSrc}
         alt={post.title || 'post image'}
-        style={{ maxWidth: '200px', display: 'block', margin: '8px auto' }}
+        className="mx-auto my-3 max-h-64 max-w-[200px] rounded-lg border border-brand-dark/10 object-cover"
       />
     )}
 
 
       {isOwner && (
-        <div style={{ marginTop: 8 }}>
-          <button onClick={handleEdit} style={{ marginRight: 8 }}>
+        <div className="mt-3 flex justify-center gap-2">
+          <button
+				onClick={handleEdit}
+				className="rounded-lg bg-brand-teal px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark"
+			>
             Modifier
           </button>
-          <button onClick={handleDelete} style={{ color: 'red' }}>
+          <button
+				onClick={handleDelete}
+				className="rounded-lg bg-brand-coral px-4 py-2 text-sm font-medium text-white hover:bg-brand-orange"
+			>
             Supprimer
           </button>
         </div>
       )}
 
-		{authorLabel && (
-			<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8, fontSize: 12, opacity: 0.75 }}>
+      {authorLabel && (
+			<div className="mt-2 flex justify-end text-xs text-brand-dark/60">
 				{authorLabel}
 			</div>
 		)}

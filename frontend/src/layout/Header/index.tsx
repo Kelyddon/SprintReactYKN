@@ -61,25 +61,28 @@ export default function Header() {
 
 
   return (
-    <header style={{ padding: 12, borderBottom: '1px solid #ddd' }}>
-      <nav style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-        <a href="#/">Accueil</a>
+    <header className="border-b border-brand-dark bg-brand-dark px-4 py-3 text-white">
+      <nav className="flex flex-wrap items-center gap-3">
+        <a href="#/" className="font-semibold text-brand-sand hover:text-white">Accueil</a>
 
-        {user && <a href="#/addpost">Ajouter</a>}
-        {!user && <a href="#/connexion">Se connecter</a>}
-        {!user && <a href="#/inscription">S'inscrire</a>}
+        {user && <a href="#/addpost" className="hover:text-brand-sand">Ajouter</a>}
+        {!user && <a href="#/connexion" className="hover:text-brand-sand">Se connecter</a>}
+        {!user && <a href="#/inscription" className="hover:text-brand-sand">S'inscrire</a>}
 
         {user && (
           <>
-            <span>Bonjour {user.username}</span>
+            <span className="ml-auto">Bonjour {user.username}</span>
 
-            <button onClick={handleLogout}>
+            <button
+					onClick={handleLogout}
+					className="rounded-lg bg-brand-teal px-3 py-2 text-sm font-medium text-white hover:bg-brand-sand hover:text-brand-dark"
+				>
               Déconnexion
             </button>
 
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              style={{ color: 'red' }}
+					className="rounded-lg bg-brand-coral px-3 py-2 text-sm font-medium text-white hover:bg-brand-orange"
             >
               Supprimer mon compte
             </button>

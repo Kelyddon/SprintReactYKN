@@ -94,12 +94,16 @@ export default function Home() {
 
   return (
     <div>
-      <h2>Fil des posts</h2>
-		{flash && <div style={{ color: 'green', marginBottom: 12 }}>{flash}</div>}
+    <h2 className="mb-3 text-2xl font-semibold text-brand-dark">Fil des posts</h2>
+    {flash && (
+      <div className="mb-3 rounded-lg border border-brand-teal/30 bg-brand-teal/10 px-3 py-2 text-sm text-brand-dark">
+        {flash}
+      </div>
+    )}
 
       {/* ✅ MENU / FILTRE */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div className="mb-3 flex items-center gap-3">
+        <label className="flex items-center gap-2 text-sm text-brand-dark">
           <input
             type="checkbox"
             checked={onlyMine}
@@ -110,14 +114,18 @@ export default function Home() {
         </label>
 
         {!currentUserId && (
-          <span style={{ fontSize: 12, opacity: 0.7 }}>
+          <span className="text-xs text-brand-dark/60">
             (Connecte-toi pour activer ce filtre)
           </span>
         )}
       </div>
 
       {loading && <div>Chargement...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+    {error && (
+      <div className="rounded-lg border border-brand-coral/40 bg-brand-coral/10 px-3 py-2 text-sm text-brand-dark">
+        {error}
+      </div>
+    )}
 
       {!loading && filteredPosts.length === 0 && (
         <div>{onlyMine ? "Tu n'as pas encore publié de post" : 'Aucun post'}</div>

@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer style={{ padding: 12, borderTop: '1px solid #eee', marginTop: 24 }}>
-      <small>Mini app — exemple</small>
+    <footer className="mt-6 border-t border-brand-dark/20 bg-white px-4 py-3 text-brand-dark">
+      <small className="opacity-80">Mini app — exemple</small>
     </footer>
   );
 }
