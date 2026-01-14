@@ -26,7 +26,7 @@ async function getPostById(req, res) {
 
 async function createPost(req, res) {
   try {
-    const { description } = req.body;
+		const { description, title } = req.body;
 
     // URL publique de l'image stockée dans /uploads
     const imageUrl = buildPublicImageUrl(req, req.file.filename);
@@ -35,6 +35,7 @@ async function createPost(req, res) {
     const post = new Post({
       user: req.user._id,
       imageUrl,
+			title: title !== undefined ? String(title).trim() : undefined,
       description: String(description).trim(),
       // Critère: champ imbriqué écrit à la création
       author: { id: req.user._id },
@@ -92,7 +93,10 @@ async function updatePost(req, res) {
 
     const update = {};
 
-    const { description } = req.body;
+    const { description, title } = req.body;
+		if (title !== undefined) {
+			update.title = String(title).trim();
+		}
     if (description !== undefined) {
       update.description = String(description).trim();
     }

@@ -13,6 +13,13 @@ const validatePostId = [
 ];
 
 const validateCreatePost = [
+  body('title')
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Title is required')
+    .isLength({ max: 200 })
+    .withMessage('Title is too long (max 200 chars)'),
   body('description')
     .isString()
     .trim()
@@ -28,6 +35,14 @@ const validateCreatePost = [
 ];
 
 const validateUpdatePost = [
+  body('title')
+    .optional()
+    .isString()
+    .trim()
+    .notEmpty()
+    .withMessage('Title cannot be empty')
+    .isLength({ max: 200 })
+    .withMessage('Title is too long (max 200 chars)'),
   body('description')
     .optional()
     .isString()
