@@ -14,9 +14,11 @@ const postsSlice = createSlice({
   initialState,
   reducers: {
     setPosts(state, action: PayloadAction<Post[]>) {
+      // Remplace la liste des posts (ex: après un fetch /posts).
       state.items = action.payload;
     },
     clearPosts(state) {
+      // Utile si on veut nettoyer au logout.
       state.items = [];
     },
   },

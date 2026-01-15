@@ -3,6 +3,9 @@ type Props = {
   onCancel: () => void;
 };
 
+// Petite modale de confirmation (overlay plein écran) :
+// - onConfirm => exécute la suppression
+// - onCancel  => ferme la modale
 export default function DeleteAccountConfirm({ onConfirm, onCancel }: Props) {
   return (
     <div style={{

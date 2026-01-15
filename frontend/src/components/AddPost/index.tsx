@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { createPost } from '../../services/api';
 
+// Formulaire "AddPost" :
+// - champs contrôlés via useState
+// - envoi au backend en FormData (support upload image)
+// - notifie la Home via l'évènement custom posts:changed
 export default function AddPost() {
 	const [title, setTitle] = useState('');
 	const [content, setContent] = useState('');
@@ -13,6 +17,7 @@ export default function AddPost() {
 		setError(null);
 		setSuccess(null);
 		try {
+			// Construction du payload multipart/form-data attendu par le backend
 			const fd = new FormData();
 			fd.append('title', title);
 			// Backend expects 'description'
@@ -23,7 +28,7 @@ export default function AddPost() {
 			// Notification simple
 			setSuccess('Post créé avec succès !');
 
-			// Demande à l'accueil de recharger les posts
+			// Demande à l'accueil de recharger les posts (Home écoute cet évènement)
 			window.dispatchEvent(new Event('posts:changed'));
 
 			// Nettoyage formulaire

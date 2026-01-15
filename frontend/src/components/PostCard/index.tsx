@@ -3,6 +3,7 @@ import { deletePost } from '../../services/api';
 import type { Post, User } from '../../types';
 
 function normalizeId(v: unknown): string | null {
+  // Helper : standardise les ids (_id / id / string)
   if (!v) return null;
   if (typeof v === 'string') return v;
   if (typeof v === 'object') {
@@ -35,6 +36,7 @@ export default function PostCard({ post, currentUser }: { post: Post; currentUse
   }, [post]);
 
   const isOwner = useMemo(() => {
+    // Affiche les boutons Modifier/Supprimer seulement si le post appartient à l'utilisateur connecté.
     if (!currentUserId || !postOwnerId) return false;
     return String(currentUserId) === String(postOwnerId);
   }, [currentUserId, postOwnerId]);
@@ -69,6 +71,9 @@ export default function PostCard({ post, currentUser }: { post: Post; currentUse
   }
 
   useEffect(() => {
+    // Gestion image :
+    // - si URL same-origin => on affiche direct
+    // - sinon on fetch en cross-origin et on crée un blob URL (CORS/credentials)
     let mounted = true;
     let objectUrl: string | null = null;
     const controller = new AbortController();

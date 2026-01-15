@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import AddPost from '../../components/AddPost';
 import { me } from '../../services/api';
 
+// Page "Ajouter un post" :
+// - vérifie rapidement si l'utilisateur est connecté
+// - si non connecté => redirige vers /connexion
+// - si connecté => affiche le composant formulaire AddPost
 export default function AddPostPage() {
   const [user, setUser] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -10,12 +14,12 @@ export default function AddPostPage() {
     let mounted = true;
     async function check() {
       try {
-        // Quick check from localStorage to avoid redirect when already logged
+        // 1) Check rapide depuis le localStorage (évite une redirection inutile)
         const stored = localStorage.getItem('authUser');
         if (stored) {
           if (mounted) setUser(JSON.parse(stored));
         }
-        // Then validate with server in background
+        // 2) Validation côté serveur en arrière-plan (/me)
         const res = await me();
         if (mounted) setUser(res.user);
       } catch (_) {
@@ -25,7 +29,7 @@ export default function AddPostPage() {
       }
     }
     check();
-    // Optionally listen to auth changes
+    // Écoute un évènement custom pour rafraîchir l'état auth si besoin
     const h = () => check();
     window.addEventListener('auth:changed', h);
     return () => {
@@ -36,6 +40,7 @@ export default function AddPostPage() {
 
   if (loading) return <div>Chargement...</div>;
   if (!user) {
+    // Redirection simple en HashRouter
     window.location.hash = '#/connexion';
     return <div>Redirection...</div>;
   }

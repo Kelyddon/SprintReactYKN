@@ -1,3 +1,5 @@
+/* Styles de base (template Vite) : on garde ici quelques règles globales.
+   La majorité du style du projet est gérée via Tailwind (voir src/index.css). */
 #root {
   max-width: 1280px;
   margin: 0 auto;

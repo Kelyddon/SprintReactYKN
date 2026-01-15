@@ -3,6 +3,9 @@ const BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000/api';
 type Credentials = { email: string; password: string };
 
 async function request(path: string, opts: RequestInit = {}) {
+  // Helper HTTP :
+  // - credentials: 'include' => envoie les cookies (JWT httpOnly) au backend
+  // - parse JSON même si le backend renvoie du texte
   const res = await fetch(`${BASE}${path}`, {
     credentials: 'include',
     headers: { ...(opts.headers || {} as Record<string, string>) },
@@ -17,6 +20,7 @@ async function request(path: string, opts: RequestInit = {}) {
 }
 
 export async function signup(payload: Record<string, any>) {
+  // Inscription (JSON)
   return request('/signup', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -25,6 +29,7 @@ export async function signup(payload: Record<string, any>) {
 }
 
 export async function login(creds: Credentials) {
+  // Connexion (JSON)
   return request('/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,26 +38,32 @@ export async function login(creds: Credentials) {
 }
 
 export async function logout() {
+  // Déconnexion (cookie supprimé côté serveur)
   return request('/logout', { method: 'POST' });
 }
 
 export async function me() {
+  // Récupère l'utilisateur courant si le cookie JWT est valide
   return request('/me');
 }
 
 export async function deleteMe() {
+  // Suppression de compte
   return request('/me', { method: 'DELETE' });
 }
 
 export async function listPosts() {
+  // Liste des posts
   return request('/posts');
 }
 
 export async function getPost(id: string) {
+  // Détail d'un post
   return request(`/posts/${id}`);
 }
 
 export async function createPost(formData: FormData) {
+  // Création d'un post : FormData (upload image)
   return fetch(`${BASE}/posts`, {
     method: 'POST',
     body: formData,
@@ -66,6 +77,7 @@ export async function createPost(formData: FormData) {
 }
 
 export async function updatePost(id: string, formData: FormData) {
+  // Mise à jour d'un post : FormData (upload image)
   return fetch(`${BASE}/posts/${id}`, {
     method: 'PUT',
     body: formData,
@@ -79,6 +91,7 @@ export async function updatePost(id: string, formData: FormData) {
 }
 
 export async function deletePost(id: string) {
+  // Suppression d'un post
   return request(`/posts/${id}`, { method: 'DELETE' });
 }
 

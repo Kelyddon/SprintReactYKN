@@ -1,3 +1,6 @@
+// Types partagés front :
+// - évite les `any` et documente la structure attendue (User/Post)
+// - volontairement permissif (beaucoup de champs optionnels) car l'API peut varier
 export type IdLike = string | { _id?: string; id?: string };
 
 export type User = {

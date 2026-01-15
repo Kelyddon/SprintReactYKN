@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { updatePost } from '../../services/api';
 
+// Formulaire "UpdatePost" :
+// - reçoit l'id du post à modifier + valeurs initiales
+// - envoie une mise à jour au backend en FormData (image optionnelle)
+// - redirige vers l'accueil après succès
 export default function UpdatePost({ id, initial }: { id: string; initial?: { title?: string; content?: string } }) {
 	const [title, setTitle] = useState(initial?.title || '');
 	const [content, setContent] = useState(initial?.content || '');
@@ -18,6 +22,7 @@ export default function UpdatePost({ id, initial }: { id: string; initial?: { ti
 		setError(null);
 		setSuccess(null);
 		try {
+			// FormData attendu par le backend (title + description + image optionnelle)
 			const fd = new FormData();
 			fd.append('title', title);
 			// Backend expects 'description'
@@ -26,7 +31,7 @@ export default function UpdatePost({ id, initial }: { id: string; initial?: { ti
 			await updatePost(id, fd);
 			window.dispatchEvent(new Event('posts:changed'));
 
-			// Message + redirection (message affiché sur l'accueil)
+			// Message + redirection (message "flash" affiché sur l'accueil)
 			setSuccess('Modification appliquée !');
 			try {
 				sessionStorage.setItem('flash', 'Modification appliquée !');

@@ -7,6 +7,8 @@ type UserState = {
 
 function loadInitialUser(): User | null {
   try {
+    // On hydrate le state au démarrage depuis le localStorage
+    // (pratique pour garder l'utilisateur connecté au refresh).
     const stored = localStorage.getItem('authUser');
     return stored ? (JSON.parse(stored) as User) : null;
   } catch {
@@ -23,6 +25,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<User | null>) {
+      // Met à jour le state + persiste dans le localStorage.
       state.user = action.payload;
       try {
         if (action.payload) localStorage.setItem('authUser', JSON.stringify(action.payload));
@@ -32,6 +35,7 @@ const userSlice = createSlice({
       }
     },
     clearUser(state) {
+      // Déconnexion : vide le state + localStorage.
       state.user = null;
       try {
         localStorage.removeItem('authUser');

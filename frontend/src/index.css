@@ -1,3 +1,6 @@
+/* Fichier de styles globaux :
+  - directives Tailwind (base/components/utilities)
+  - palette et styles généraux (liens, body, boutons, etc.) */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

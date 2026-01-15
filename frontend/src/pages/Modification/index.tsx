@@ -3,11 +3,16 @@ import { useSearchParams } from 'react-router-dom';
 import UpdatePost from '../../components/UpdatePost';
 import { getPost } from '../../services/api';
 
+// Page "Modification" :
+// - récupère l'id du post via query string (?id=...)
+// - charge le post via API (getPost)
+// - affiche le formulaire UpdatePost pré-rempli
 export default function Modification() {
   const [search] = useSearchParams();
   const id = search.get('id') || undefined;
 
   const isLoggedIn = useMemo(() => {
+    // Check minimal : présence d'un utilisateur en local (on pourrait aussi valider via /me)
     try {
       return Boolean(localStorage.getItem('authUser'));
     } catch {
@@ -26,6 +31,7 @@ export default function Modification() {
     async function load() {
       setLoading(true);
       try {
+        // Charge le post existant pour pré-remplir le formulaire
         const res = await getPost(postId);
         if (mounted) setInitial(res.post || null);
       } catch (err: any) {

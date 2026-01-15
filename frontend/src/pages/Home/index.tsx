@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setPosts } from '../../store/postsSlice';
 
 function normalizeId(v: unknown): string | null {
+  // Helper : certains objets peuvent être { _id } ou { id } selon la source.
   if (!v) return null;
   if (typeof v === 'string') return v;
   if (typeof v === 'object') {
@@ -29,6 +30,7 @@ function getPostOwnerId(p: Post): string | null {
 
 export default function Home() {
   const dispatch = useAppDispatch();
+  // On lit les posts depuis Redux (state global)
   const posts = useAppSelector((s) => s.posts.items);
 
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ export default function Home() {
         setCurrentUser(null);
       }
 
-      // 2) posts
+      // 2) posts (fetch /posts puis stockage dans Redux)
       const res = await listPosts();
       dispatch(setPosts((res.posts || []) as Post[]));
     } catch (err: any) {
@@ -70,6 +72,7 @@ export default function Home() {
   }
 
   useEffect(() => {
+    // Chargement initial + écoute d'évènements custom pour recharger (après create/update/delete)
     load();
     // Message "flash" (ex: après création / modification)
     try {
@@ -96,6 +99,7 @@ export default function Home() {
   }, [currentUser]);
 
   const filteredPosts = useMemo(() => {
+    // Filtre optionnel : afficher uniquement mes posts
     if (!onlyMine) return posts;
     if (!currentUserId) return []; // si pas connecté, rien à afficher en "mes posts"
     return posts.filter((p) => String(getPostOwnerId(p)) === String(currentUserId));

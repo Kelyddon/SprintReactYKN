@@ -7,6 +7,7 @@ import { setUser } from '../../store/userSlice';
 export default function FormSignup() {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	// Champs contrôlés (useState) pour le formulaire d'inscription.
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [username, setUsername] = useState('');
@@ -18,6 +19,7 @@ export default function FormSignup() {
 		e.preventDefault();
 		setError(null);
 		try {
+			// Appel API + setUser => l'utilisateur est considéré "connecté"
 			const res = await signup({ firstName, lastName, username, email, password });
 			dispatch(setUser(res.user));
 			window.dispatchEvent(new Event('auth:changed'));

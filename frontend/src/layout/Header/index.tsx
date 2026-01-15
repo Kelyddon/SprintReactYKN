@@ -10,6 +10,8 @@ export default function Header() {
   const navigate = useNavigate();
   const reduxUser = useAppSelector((s) => s.user.user);
 
+  // user local = simple pour afficher rapidement "Bonjour ...".
+  // On le synchronise avec Redux pour garder l'UI cohérente.
   const [user, setUserState] = useState<any | null>(reduxUser);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -18,13 +20,14 @@ export default function Header() {
 
     async function load() {
       try {
-        // Lecture rapide depuis le localStorage
+        // 1) Lecture rapide depuis le localStorage (si déjà loggé)
         const stored = localStorage.getItem('authUser');
         if (stored) {
           const parsed = JSON.parse(stored);
           if (mounted) setUserState(parsed);
           dispatch(setUser(parsed));
         } else {
+          // 2) Sinon, on demande au backend qui est connecté (/me)
           const res = await me();
           if (mounted) setUserState(res.user);
           dispatch(setUser(res.user));
@@ -51,6 +54,7 @@ export default function Header() {
 
   async function handleLogout() {
     try {
+      // Déconnexion côté serveur + mise à jour du state Redux
       await logout();
       dispatch(clearUser());
       window.dispatchEvent(new Event('auth:changed'));
@@ -63,6 +67,7 @@ export default function Header() {
   async function handleDeleteAccount() {
     try {
       setShowDeleteConfirm(false); // 👈 ferme la popup immédiatement
+      // Suppression du compte côté serveur + nettoyage state
       await deleteMe();
       dispatch(clearUser());
       window.dispatchEvent(new Event('auth:changed'));
