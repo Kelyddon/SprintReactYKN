@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { me, logout, deleteMe } from '../../services/api';
 import DeleteAccountConfirm from '../../components/DeleteAccountConfirm';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { clearUser, setUser } from '../../store/userSlice';
 
 export default function Header() {
-  const [user, setUser] = useState<any | null>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const reduxUser = useAppSelector((s) => s.user.user);
+
+  const [user, setUserState] = useState<any | null>(reduxUser);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
@@ -14,13 +21,17 @@ export default function Header() {
         // Lecture rapide depuis le localStorage
         const stored = localStorage.getItem('authUser');
         if (stored) {
-          if (mounted) setUser(JSON.parse(stored));
+          const parsed = JSON.parse(stored);
+          if (mounted) setUserState(parsed);
+          dispatch(setUser(parsed));
         } else {
           const res = await me();
-          if (mounted) setUser(res.user);
+          if (mounted) setUserState(res.user);
+          dispatch(setUser(res.user));
         }
       } catch (err) {
-        if (mounted) setUser(null);
+        if (mounted) setUserState(null);
+        dispatch(clearUser());
       }
     }
 
@@ -34,12 +45,16 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    setUserState(reduxUser);
+  }, [reduxUser]);
+
   async function handleLogout() {
     try {
       await logout();
-      localStorage.removeItem('authUser');
+      dispatch(clearUser());
       window.dispatchEvent(new Event('auth:changed'));
-      window.location.hash = '#/connexion';
+      navigate('/connexion');
     } catch (err) {
       console.error(err);
     }
@@ -49,9 +64,9 @@ export default function Header() {
     try {
       setShowDeleteConfirm(false); // 👈 ferme la popup immédiatement
       await deleteMe();
-      localStorage.removeItem('authUser');
+      dispatch(clearUser());
       window.dispatchEvent(new Event('auth:changed'));
-      window.location.hash = '#/connexion';
+      navigate('/connexion');
     } catch (err) {
       setShowDeleteConfirm(false); // 👈 sécurité
       alert("Erreur lors de la suppression du compte");
@@ -63,11 +78,11 @@ export default function Header() {
   return (
     <header className="border-b border-brand-dark bg-brand-dark px-4 py-3 text-white">
       <nav className="flex flex-wrap items-center gap-3">
-        <a href="#/" className="font-semibold text-brand-sand hover:text-white">Accueil</a>
+        <Link to="/" className="font-semibold text-brand-sand hover:text-white">Accueil</Link>
 
-        {user && <a href="#/addpost" className="hover:text-brand-sand">Ajouter</a>}
-        {!user && <a href="#/connexion" className="hover:text-brand-sand">Se connecter</a>}
-        {!user && <a href="#/inscription" className="hover:text-brand-sand">S'inscrire</a>}
+        {user && <Link to="/addpost" className="hover:text-brand-sand">Ajouter</Link>}
+        {!user && <Link to="/connexion" className="hover:text-brand-sand">Se connecter</Link>}
+        {!user && <Link to="/inscription" className="hover:text-brand-sand">S'inscrire</Link>}
 
         {user && (
           <>

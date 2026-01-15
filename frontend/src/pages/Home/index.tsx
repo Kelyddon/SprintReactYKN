@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { listPosts, me } from '../../services/api';
 import PostCard from '../../components/PostCard';
+import type { Post, User } from '../../types';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setPosts } from '../../store/postsSlice';
 
-function normalizeId(v: any): string | null {
+function normalizeId(v: unknown): string | null {
   if (!v) return null;
   if (typeof v === 'string') return v;
-  return v._id || v.id || null;
+  if (typeof v === 'object') {
+    const maybe = v as { _id?: unknown; id?: unknown };
+    return (typeof maybe._id === 'string' && maybe._id) || (typeof maybe.id === 'string' && maybe.id) || null;
+  }
+  return null;
 }
 
-function getPostOwnerId(p: any): string | null {
+function getPostOwnerId(p: Post): string | null {
   // selon ton backend, l'auteur peut être dans plusieurs champs
   return (
     normalizeId(p.author) ||
@@ -21,13 +28,15 @@ function getPostOwnerId(p: any): string | null {
 }
 
 export default function Home() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const dispatch = useAppDispatch();
+  const posts = useAppSelector((s) => s.posts.items);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
 	const [flash, setFlash] = useState<string | null>(null);
 
-  const [currentUser, setCurrentUser] = useState<any | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // ✅ filtre : afficher uniquement les posts de l'utilisateur connecté
   const [onlyMine, setOnlyMine] = useState(false);
@@ -44,7 +53,7 @@ export default function Home() {
           setCurrentUser(JSON.parse(stored));
         } else {
           const u = await me();
-          setCurrentUser(u?.user || null);
+          setCurrentUser((u && (u.user ?? u)) || null);
         }
       } catch {
         setCurrentUser(null);
@@ -52,7 +61,7 @@ export default function Home() {
 
       // 2) posts
       const res = await listPosts();
-      setPosts(res.posts || []);
+      dispatch(setPosts((res.posts || []) as Post[]));
     } catch (err: any) {
       setError(err?.message || 'Erreur chargement posts');
     } finally {
@@ -83,7 +92,7 @@ export default function Home() {
   }, []);
 
   const currentUserId = useMemo(() => {
-    return normalizeId(currentUser) || normalizeId(currentUser?.user) || null;
+    return normalizeId(currentUser) || null;
   }, [currentUser]);
 
   const filteredPosts = useMemo(() => {

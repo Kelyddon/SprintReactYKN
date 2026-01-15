@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/api';
+import { useAppDispatch } from '../../store/hooks';
+import { setUser } from '../../store/userSlice';
 
 export default function FormLogin() {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState<string | null>(null);
@@ -11,12 +16,9 @@ export default function FormLogin() {
 		setError(null);
 		try {
 			const res = await login({ email, password });
-			// Persist user locally for immediate UI updates
-			try {
-				localStorage.setItem('authUser', JSON.stringify(res.user));
-			} catch (_) {}
+			dispatch(setUser(res.user));
 			window.dispatchEvent(new Event('auth:changed'));
-			window.location.hash = '#/';
+			navigate('/');
 		} catch (err: any) {
 			setError(err?.message || 'Erreur de connexion');
 		}

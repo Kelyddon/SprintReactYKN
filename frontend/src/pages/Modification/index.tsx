@@ -1,8 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import UpdatePost from '../../components/UpdatePost';
 import { getPost } from '../../services/api';
 
-export default function Modification({ id }: { id?: string }) {
+export default function Modification() {
+  const [search] = useSearchParams();
+  const id = search.get('id') || undefined;
+
+  const isLoggedIn = useMemo(() => {
+    try {
+      return Boolean(localStorage.getItem('authUser'));
+    } catch {
+      return false;
+    }
+  }, []);
+
   const [initial, setInitial] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +40,7 @@ export default function Modification({ id }: { id?: string }) {
     };
   }, [id]);
 
+  if (!isLoggedIn) return <div>Accès refusé : connecte-toi d'abord.</div>;
   if (!id) return <div>ID manquant</div>;
   if (loading) return <div>Chargement...</div>;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;

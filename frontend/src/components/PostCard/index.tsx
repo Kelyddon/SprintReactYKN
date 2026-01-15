@@ -1,41 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { deletePost } from '../../services/api';
+import type { Post, User } from '../../types';
 
-type Post = {
-  id?: string;
-  _id?: string;
-  title?: string;
-  content?: string;
-  description?: string;
-  image?: string;
-  imageUrl?: string;
-
-  // selon ton backend, l'auteur peut être dans un de ces champs :
-  author?: any;
-  user?: any;
-  owner?: any;
-  createdBy?: any;
-  userId?: any;
-};
-
-function normalizeId(v: any): string | null {
+function normalizeId(v: unknown): string | null {
   if (!v) return null;
   if (typeof v === 'string') return v;
-  return v._id || v.id || null;
+  if (typeof v === 'object') {
+    const maybe = v as { _id?: unknown; id?: unknown };
+    return (typeof maybe._id === 'string' && maybe._id) || (typeof maybe.id === 'string' && maybe.id) || null;
+  }
+  return null;
 }
 
-export default function PostCard({ post, currentUser }: { post: Post; currentUser: any | null }) {
+export default function PostCard({ post, currentUser }: { post: Post; currentUser: User | null }) {
   const id = post._id || post.id;
 
   const [imgSrc, setImgSrc] = useState<string | null>(post.imageUrl || post.image || null);
 
   // id du user connecté (supporte plusieurs formes)
   const currentUserId = useMemo(() => {
-    return (
-      normalizeId(currentUser) ||
-      normalizeId(currentUser?.user) ||
-      null
-    );
+    return normalizeId(currentUser) || null;
   }, [currentUser]);
 
   // id du propriétaire du post (supporte plusieurs structures possibles)
@@ -56,7 +40,7 @@ export default function PostCard({ post, currentUser }: { post: Post; currentUse
   }, [currentUserId, postOwnerId]);
 
   const authorLabel = useMemo(() => {
-    const u: any = (post as any)?.user;
+    const u = post.user;
     if (!u || typeof u === 'string') return null;
     return (
       u.username ||
@@ -80,8 +64,8 @@ export default function PostCard({ post, currentUser }: { post: Post; currentUse
 
   function handleEdit() {
     if (!id) return;
-    // Navigue vers la page de modification (router basé sur le hash)
-    window.location.hash = `#/modification/${id}`;
+    // Évite une route dynamique :id (objectif routage 1/3)
+    window.location.hash = `#/modification?id=${encodeURIComponent(String(id))}`;
   }
 
   useEffect(() => {

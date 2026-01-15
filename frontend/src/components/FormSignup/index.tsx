@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { signup } from '../../services/api';
+import { useAppDispatch } from '../../store/hooks';
+import { setUser } from '../../store/userSlice';
 
 export default function FormSignup() {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [username, setUsername] = useState('');
@@ -14,10 +19,9 @@ export default function FormSignup() {
 		setError(null);
 		try {
 			const res = await signup({ firstName, lastName, username, email, password });
-			// Persist user locally for immediate UI updates
-			try { localStorage.setItem('authUser', JSON.stringify(res.user)); } catch(_) {}
+			dispatch(setUser(res.user));
 			window.dispatchEvent(new Event('auth:changed'));
-			window.location.hash = '#/';
+			navigate('/');
 		} catch (err: any) {
 			setError(err?.message || 'Erreur inscription');
 		}
